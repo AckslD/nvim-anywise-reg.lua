@@ -28,12 +28,12 @@ local function set_keymap(lhs, rhs)
 end
 
 local function setup_default_keymaps()
-    local lhs = 'daw'
-    local rhs = lhs..'<Cmd>lua require("anywise_reg").handle_action("'..lhs..'")<CR>'
-    set_keymap(lhs, rhs)
+    -- local lhs = 'daw'
+    -- local rhs = lhs..'<Cmd>lua require("anywise_reg").handle_action("'..lhs..'")<CR>'
+    -- set_keymap(lhs, rhs)
 
-    lhs = 'p'
-    rhs = '<Cmd>lua require("anywise_reg").handle_paste("'..lhs..'")<CR>'
+    local lhs = 'p'
+    local rhs = '<Cmd>lua require("anywise_reg").handle_paste("'..lhs..'")<CR>'
     set_keymap(lhs, rhs)
 end
 
@@ -74,13 +74,43 @@ end
 M.handle_paste = function(paste_action)
     print("handling paste: ", paste_action)
     local reg_action = get_reg_action(paste_action)
-    -- go to end of current text object
-    normal('v'..reg_action:sub(-2), {noremap = false})
-    normal('<Esc>p')
+    if reg_action ~= nil then
+        -- go to end of current text object
+        normal('v'..reg_action:sub(-2), {noremap = false})
+        normal('<Esc>')
+    end
+    normal('p')
+end
+
+M.handle_yank_post = function()
+    local e = vim.v.event
+    if e.visual then
+        return -- TODO update numbered?
+    end
+    local op = e.operator
+    local reg = e.regname
+    if reg == '' then
+        reg = '"'
+    end
+    print("handling operator", op, "with reg", reg)
+    print(vim.v.event.inclusive)
+    print(vim.v.event.operator)
+    print(vim.v.event.regcontents)
+    for k, v in pairs(vim.v.event.regcontents) do
+        print(k, v)
+    end
+    print(vim.v.event.regname)
+    print(vim.v.event.regtype)
+    print(vim.v.event.visual)
+end
+
+local function setup_auto_command()
+    vim.cmd('autocmd TextYankPost * :lua require("anywise_reg").handle_yank_post()')
 end
 
 M.setup = function()
-    -- setup_default_keymaps()
+    setup_auto_command()
+    setup_default_keymaps()
 end
 
 return M
