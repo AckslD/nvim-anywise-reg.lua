@@ -6,9 +6,15 @@ M.handle_action = function(operator, textobject)
     data.update_reg_data(operator, textobject)
 end
 
-M.handle_paste = function()
-    -- TODO for now can only handle paste from unnamed
-    local reg = '"'
+local function get_register(prefix)
+    if prefix == '' then
+        return '"'
+    end
+    return string.sub(prefix, 2, 3)
+end
+
+M.handle_paste = function(prefix)
+    local reg = get_register(prefix)
     local d = data.reg_data[reg]
     if d ~= nil then
         -- go to end of current text object

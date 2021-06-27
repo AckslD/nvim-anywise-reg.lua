@@ -40,9 +40,18 @@ M.setup_default_keymaps = function()
     end
 
     if config.paste_key ~= nil then
-        local lhs = config.paste_key
-        local rhs = '<Cmd>lua require("anywise_reg.handlers").handle_paste()<CR>'
-        set_keymap(lhs, rhs)
+        local prefixes = {'', '""'}
+        for i=1,9 do
+            table.insert(prefixes, '"'..string.format("%d", i))
+        end
+        for c=97,122 do
+            table.insert(prefixes, '"'..string.char(c))
+        end
+        for _, prefix in ipairs(prefixes) do
+            local lhs = prefix..config.paste_key
+            local rhs = '<Cmd>lua require("anywise_reg.handlers").handle_paste(\''..prefix..'\')<CR>'
+            set_keymap(lhs, rhs)
+        end
     end
 end
 
