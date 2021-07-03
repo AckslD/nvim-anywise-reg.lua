@@ -1,10 +1,14 @@
 local M = {}
 local config = require('anywise_reg.config').config
+local handlers = require('anywise_reg.handlers')
+local normal = require('anywise_reg.cmd').normal
 
 local function set_keymap(lhs, rhs)
-    local opts = {noremap = false}
+    -- local opts = {noremap = false}
+    local opts = {noremap = true}
     local mode = 'n'
-    vim.api.nvim_set_keymap(
+    vim.api.nvim_buf_set_keymap(
+        0,
         mode,
         lhs,
         rhs,
@@ -21,7 +25,7 @@ local function format_str_args(str_args)
 end
 
 local function remap(lhs)
-    local rhs = vim.fn.maparg(lhs)
+    local rhs = vim.fn.maparg(lhs, 'o')
     if rhs == '' then
         return lhs
     else
@@ -29,12 +33,38 @@ local function remap(lhs)
     end
 end
 
-M.setup_default_keymaps = function()
+local current_textobject_keymaps = {}
+
+local function save_current_textobject_keymap(textobject)
+    local current_rhs = remap(textobject)
+    if current_rhs ~= textobject then
+        current_textobject_keymaps[textobject] = current_rhs
+    end
+end
+
+local function remapped_textobject(textobject)
+    local current_rhs = current_textobject_keymaps[textobject]
+    if current_rhs == nil then
+        return textobject
+    else
+        return current_rhs
+    end
+end
+
+M.perform_action = function(operator, textobject)
+    handlers.before_action()
+    normal(operator..remapped_textobject(textobject))
+    handlers.handle_action(operator, textobject)
+end
+
+M.setup_keymaps = function()
+    -- TODO also do the same as for registers as for paste, create all mappings?
+    current_textobject_keymaps = {} -- reset
     for _, operator in ipairs(config.operators) do
         for _, textobject in ipairs(config.textobjects) do
-            -- local lhs = operator..remap(textobject) TODO decide how to handle this
+            save_current_textobject_keymap(textobject)
             local lhs = operator..textobject
-            local rhs = lhs..'<Cmd>lua require("anywise_reg.handlers").handle_action('..format_str_args({operator, textobject})..')<CR>'
+            local rhs = '<Cmd>lua require("anywise_reg.keybinds").perform_action('..format_str_args({operator, textobject})..')<CR>'
             set_keymap(lhs, rhs)
         end
     end

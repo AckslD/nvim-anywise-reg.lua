@@ -39,6 +39,15 @@ By default no keybindings are enabled, see below for configuration.
 
 # Configuration
 To use `anywise-reg` you need to specify which operators and textobjects you want keep track of and what key to paste with.
+The default config is:
+```lua
+require("anywise_reg").setup({
+    operators = {},
+    textobjects = {},
+    paste_key = nil,
+    register_print_cmd = false,
+})
+```
 For example to be able to only delete (`d`) "outer words" (`aw`), call the setup as follows:
 ```lua
 require("anywise_reg").setup({
