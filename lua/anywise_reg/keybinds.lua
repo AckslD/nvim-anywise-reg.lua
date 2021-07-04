@@ -35,6 +35,7 @@ end
 M.perform_action = function(prefix, operator, textobject)
     handlers.before_action()
     normal(prefix..operator..remap(textobject))
+    if operator == 'c' then vim.cmd('startinsert') end
     handlers.handle_action(prefix, operator, textobject)
 end
 
