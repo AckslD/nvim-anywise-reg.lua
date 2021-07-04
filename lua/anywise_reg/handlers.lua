@@ -20,7 +20,7 @@ end
 
 M.handle_paste = function(prefix)
     local reg = get_register(prefix)
-    local d = data.reg_data[reg] -- TODO bump number regs
+    local d = data.reg_data[reg]
     if d ~= nil then
         -- go to end of current text object
         cmd.normal('v'..d.textobject, {noremap = false})
@@ -30,15 +30,13 @@ M.handle_paste = function(prefix)
 end
 
 M.handle_yank_post = function()
-    print(vim.inspect(vim.v.event))
     local reg_name = vim.v.event.regname
+    local operator = vim.v.event.operator
     if reg_name == '' then
         reg_name = '"'
     end
-    if data.will_handle_action then
-        -- data.last_reg_name = reg_name
-    else
-        data.reset_reg_data(reg_name) -- TODO bump number regs
+    if not data.will_handle_action then
+        data.update_reg_data(reg_name, operator, nil)
     end
     data.will_handle_action = nil
 end

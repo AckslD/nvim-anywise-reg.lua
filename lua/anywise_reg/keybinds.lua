@@ -4,7 +4,6 @@ local handlers = require('anywise_reg.handlers')
 local normal = require('anywise_reg.cmd').normal
 
 local function set_keymap(lhs, rhs)
-    -- local opts = {noremap = false}
     local opts = {noremap = true}
     local mode = 'n'
     vim.api.nvim_buf_set_keymap(
@@ -33,39 +32,9 @@ local function remap(lhs)
     end
 end
 
-local current_textobject_keymaps = {}
-
-local function save_current_textobject_keymap(buf, textobject)
-    local current_rhs = remap(textobject)
-    if current_rhs ~= textobject then
-        current_textobject_keymaps[buf][textobject] = current_rhs
-    end
-end
-
-local function save_current_textobject_keymaps()
-    local buf = vim.api.nvim_get_current_buf()
-    if current_textobject_keymaps[buf] == nil then
-        current_textobject_keymaps[buf] = {}
-    end
-    for _, textobject in ipairs(config.textobjects) do
-        save_current_textobject_keymap(textobject)
-    end
-end
-
-local function remapped_textobject(textobject)
-    local buf = vim.api.nvim_get_current_buf()
-    local current_rhs = current_textobject_keymaps[buf][textobject]
-    if current_rhs == nil then
-        return textobject
-    else
-        return current_rhs
-    end
-end
-
 M.perform_action = function(prefix, operator, textobject)
     handlers.before_action()
-    print('normal', prefix..operator..remapped_textobject(textobject))
-    normal(prefix..operator..remapped_textobject(textobject))
+    normal(prefix..operator..remap(textobject))
     handlers.handle_action(prefix, operator, textobject)
 end
 
@@ -91,7 +60,6 @@ local function setup_keymaps_for_prefix(prefix)
 end
 
 M.setup_keymaps = function()
-    save_current_textobject_keymaps()
     if config.paste_key ~= nil then
         local prefixes = {'', '""'}
         for i=1,9 do

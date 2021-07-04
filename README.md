@@ -6,16 +6,19 @@ Did you ever felt like doing `daf` and then `p` to paste a function somewhere el
 ![](anywise.gif)
 
 ## Longer intro
-One of the most satisfying things in my opinion when using vim is the easy of doing `xp` of `ddp` to move a character to the right or a line down.
+One of the most satisfying things, in my opinion, when using vim is the ease of doing `xp` or `ddp` to move a character to the right or a line down.
 The reason this works (using a single key `p` for pasting) is that vim keeps track of what was yanked.
-In particular vim keeps track if the yank was charwise, linewise or blockwise in order to determine how the content of the register should be pasted.
+In particular vim keeps track if the yank was `charwise`, `linewise` or `blockwise`, in order to determine how the content of the register should be pasted.
 
-Now wouldn't it be amazing if this notion could be generalised to more complex patterns, such as words (`daw`), paragraphs (`dap`) or functions and classes (`daf`, `dac` from e.g. [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)).
+Now, wouldn't it be amazing if this notion could be generalised to more complex patterns, such as words (`daw`), paragraphs (`dap`) or functions and classes (`daf`, `dac` from e.g. [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)).
 This is exactly what `anywise-reg` does, namely extending the registers to not only have a notion of `charwise`, `linewise` and `blockwise` but any pattern.
 
-`anywise-reg` keeps track of what text-object was used for yanking the text (and into what register) in order to determine how to paste it.
-Before pasting the cursor is simply moved to the end of the same text-object currently under the cursor.
+`anywise-reg` keeps track of what text-object was used for yanking (deleting, changing etc) the text (and into what register) in order to determine how to paste it.
+Before pasting, the cursor is simply moved to the end of the same text-object, currently under the cursor.
 In this way there is no hard-coded behaviour, rather the text-objects behaviour is reused and therefore any text-object could be used.
+This also means that it is all up to the text-object to do the correct thing.
+
+All the registers `"` and `[0-9][a-z]` are supported and `anywise-reg` updates for example the numbered registers when deleting text.
 
 # Installation
 
@@ -48,12 +51,17 @@ require("anywise_reg").setup({
     register_print_cmd = false,
 })
 ```
+* `operators`: The operators to keep track of, e.g. `{y, d}` (see below for details).
+* `textobjects`: The textobjects to keep track of, e.g. `{aw, af}` (see below for details).
+* `paste_key`: The key used for pasting, e.g `p`.
+* `register_print_cmd`: Whether the command `:RegData` should be setup which can be used to print information of what's being kept track of in the registers, similar to `:reg`. Not that this currently just prints what's stored in the table and is not yet formatted nicely.
+
 For example to be able to only delete (`d`) "outer words" (`aw`), call the setup as follows:
 ```lua
 require("anywise_reg").setup({
-    paste_key = 'p',
     operators = {'d'},
     textobjects = {'aw'},
+    paste_key = 'p',
 })
 ```
 This will setup keybindings for `daw`, `p` `""p` and `"[0-9a-z]p` in normal mode.
@@ -63,17 +71,26 @@ In the latter case the cartesian product will be taken between all tables to avo
 For example a standard config might look like:
 ```lua
 require("anywise_reg").setup({
-    paste_key = 'p',
     operators = {'y', 'd', 'c'},
     textobjects = {
         {'i', 'a'},
         {'w', 'W', 'f', 'c'},
     },
+    paste_key = 'p',
+    register_print_cmd = true,
 })
 ```
 
+## A note on treesitter-textobjects
+My initial motion for this plugins was to copy and paste functions.
+By default the `if`, `af`, `ic` and `ac` text-objects from [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) are `charwise`.
+Since `anywise-reg` simply makes use of whatever the text-object does, you may or may not get the desired behaviour by default.
+I recently opened a [PR](https://github.com/nvim-treesitter/nvim-treesitter-textobjects/pull/70) to `nvim-treesitter-textobjects` which allows one to specify that some text-objects should actually be `linewise`.
+
 # TODOs and questions
-* When to prune the information stored in the registers?
-* Currently the numbered registers are not updated as they should, the data should be shifted any time something is deleted.
-* How can registers when pasting be handled better? Currently we add a keybind for each register but maybe there is some smarter way.
-* Add a command similar to `:reg` to easily see the generalised content of the registers.
+* Currently the numbered registers are not updated as they should if the user does `x` or `s`.
+  When we check what operator was applied using `TextYankPost` there is no difference between eg `dd` and `x`.
+  However, `dd` does update the numbered registers but `x` doesn't.
+  I haven't thought of a way how to handle this properly yet.
+* How can registers be handled better? Currently we add a keybind for each register but maybe there is some smarter way.
+* Currently the optional command `:RegData` just prints the table stored, would be nicer to format this, for example in the same shape as `:reg`?
