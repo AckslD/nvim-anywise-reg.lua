@@ -18,6 +18,17 @@ M.handle_action = function(prefix, operator, textobject)
     data.update_reg_data(reg_name, operator, textobject)
 end
 
+M.handle_paste_behind = function(prefix)
+    local reg = get_register(prefix)
+    local d = data.reg_data[reg]
+    if d ~= nil then
+        -- go to start of current text object
+        cmd.normal('v' .. d.textobject, {noremap = false})
+        cmd.normal('o<Esc>')
+    end
+    cmd.normal(prefix .. 'P')
+end
+
 M.handle_paste = function(prefix)
     local reg = get_register(prefix)
     local d = data.reg_data[reg]

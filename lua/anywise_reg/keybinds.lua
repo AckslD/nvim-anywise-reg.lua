@@ -54,22 +54,30 @@ local function setup_paste_keymaps(prefix)
     set_keymap(lhs, rhs)
 end
 
-local function setup_keymaps_for_prefix(prefix)
-    setup_yank_keymaps(prefix)
-    setup_paste_keymaps(prefix)
+local function setup_paste_behind_keymaps(prefix)
+    local lhs = prefix .. config.paste_behind_key
+    local rhs =
+        '<Cmd>lua require("anywise_reg.handlers").handle_paste_behind(\'' ..
+            prefix .. '\')<CR>'
+    set_keymap(lhs, rhs)
 end
 
 M.setup_keymaps = function()
+    local prefixes = {'', '""'}
+    if config.paste_key ~= nil or config.paste_behind_key ~= nil then
+        for i = 1, 9 do
+            table.insert(prefixes, '"' .. string.format("%d", i))
+        end
+        for c = 97, 122 do table.insert(prefixes, '"' .. string.char(c)) end
+
+        for _, prefix in ipairs(prefixes) do setup_yank_keymaps(prefix) end
+    end
     if config.paste_key ~= nil then
-        local prefixes = {'', '""'}
-        for i=1,9 do
-            table.insert(prefixes, '"'..string.format("%d", i))
-        end
-        for c=97,122 do
-            table.insert(prefixes, '"'..string.char(c))
-        end
+        for _, prefix in ipairs(prefixes) do setup_paste_keymaps(prefix) end
+    end
+    if config.paste_behind_key ~= nil then
         for _, prefix in ipairs(prefixes) do
-            setup_keymaps_for_prefix(prefix)
+            setup_paste_behind_keymaps(prefix)
         end
     end
 end

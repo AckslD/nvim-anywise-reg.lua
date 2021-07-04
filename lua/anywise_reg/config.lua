@@ -4,6 +4,7 @@ M.config = {
     operators = {},
     textobjects = {},
     paste_key = nil,
+    paste_behind_key = nil,
     register_print_cmd = false,
 }
 
