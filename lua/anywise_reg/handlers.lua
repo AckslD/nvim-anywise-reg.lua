@@ -6,15 +6,16 @@ M.before_action = function()
     data.will_handle_action = true
 end
 
-M.handle_action = function(operator, textobject)
-    data.update_reg_data(operator, textobject)
-end
-
 local function get_register(prefix)
     if prefix == '' then
         return '"'
     end
     return string.sub(prefix, 2, 3)
+end
+
+M.handle_action = function(prefix, operator, textobject)
+    local reg_name = get_register(prefix)
+    data.update_reg_data(reg_name, operator, textobject)
 end
 
 M.handle_paste = function(prefix)
@@ -35,7 +36,7 @@ M.handle_yank_post = function()
         reg_name = '"'
     end
     if data.will_handle_action then
-        data.last_reg_name = reg_name
+        -- data.last_reg_name = reg_name
     else
         data.reset_reg_data(reg_name) -- TODO bump number regs
     end

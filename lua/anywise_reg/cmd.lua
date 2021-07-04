@@ -13,6 +13,7 @@ M.normal = function(str, opts)
     if opts.noremap == true then
         flag = '!'
     end
+    print('cmd', replace_termcodes("normal"..flag.." "..str))
     vim.cmd(replace_termcodes("normal"..flag.." "..str))
 end
 
