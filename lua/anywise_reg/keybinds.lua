@@ -1,7 +1,7 @@
 local M = {}
 local config = require('anywise_reg.config').config
 local handlers = require('anywise_reg.handlers')
-local normal = require('anywise_reg.cmd').normal
+local feedkeys = require('anywise_reg.cmd').feedkeys
 
 local function set_keymap(lhs, rhs)
     local opts = {noremap = true}
@@ -34,7 +34,7 @@ end
 
 M.perform_action = function(prefix, operator, textobject)
     handlers.before_action()
-    normal(prefix..operator..remap(textobject))
+    feedkeys(prefix..operator..remap(textobject))
     handlers.handle_action(prefix, operator, textobject)
 end
 
