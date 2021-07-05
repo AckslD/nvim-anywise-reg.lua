@@ -14,22 +14,22 @@ local function get_register(prefix)
 end
 
 M.handle_action = function(prefix, operator, textobject)
-	local reg_name = get_register(prefix)
-	data.update_reg_data(reg_name, operator, textobject)
+    local reg_name = get_register(prefix)
+    data.update_reg_data(reg_name, operator, textobject)
 end
 
 M.handle_paste = function(prefix, operator)
-	local reg = get_register(prefix)
-	local d = data.reg_data[reg]
-	if d ~= nil then
-		-- go to edge of current text object
-		cmd.normal("v" .. d.textobject, { noremap = false })
-		if operator == "P" then -- if 'P' we paste behind
-			cmd.normal("o")
-		end
-		cmd.normal("<Esc>")
-	end
-	cmd.normal(prefix .. operator)
+    local reg = get_register(prefix)
+    local d = data.reg_data[reg]
+    if d ~= nil then
+        -- go to edge of current text object
+        cmd.normal("v" .. d.textobject, { noremap = false })
+        if operator == "P" then -- if 'P' we paste behind
+            cmd.normal("o")
+        end
+        cmd.normal("<Esc>")
+    end
+    cmd.normal(prefix .. operator)
 end
 
 M.handle_yank_post = function()
