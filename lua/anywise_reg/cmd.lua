@@ -7,13 +7,13 @@ end
 
 M.normal = function(str, opts)
     if opts == nil then
-        opts = {noremap = true}
+        opts = { noremap = true }
     end
-    local flag = ''
+    local flag = ""
     if opts.noremap == true then
-        flag = '!'
+        flag = "!"
     end
-    vim.cmd(replace_termcodes("normal"..flag.." "..str))
+    vim.cmd(replace_termcodes("normal" .. flag .. " " .. str))
 end
 
 M.feedkeys = function(str, mode)
@@ -22,7 +22,7 @@ end
 
 M.setup_commands = function()
     if config.register_print_cmd then
-        vim.cmd('command! RegData lua require("anywise_reg.data").print_reg_data()')
+        vim.cmd 'command! RegData lua require("anywise_reg.data").print_reg_data()'
     end
 end
 

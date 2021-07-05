@@ -4,19 +4,19 @@ M.config = {
     operators = {},
     textobjects = {},
     paste_keys = {},
-    register_print_cmd = false
+    register_print_cmd = false,
 }
 
 local function product(textobjects)
     if textobjects[1] == nil then
-        return {''}
+        return { "" }
     end
     local textobject = table.remove(textobjects, 1)
     local expanded_textobjects = product(textobjects)
     local new_expanded_textobjects = {}
     for _, start in ipairs(textobject) do
         for _, rest in ipairs(expanded_textobjects) do
-            table.insert(new_expanded_textobjects, start..rest)
+            table.insert(new_expanded_textobjects, start .. rest)
         end
     end
     return new_expanded_textobjects
@@ -26,7 +26,7 @@ local function expand_textobjects()
     local textobjects = M.config.textobjects
     for i, textobject in ipairs(textobjects) do
         if type(textobject) == "string" then
-            textobjects[i] = {textobject}
+            textobjects[i] = { textobject }
         end
     end
     M.config.textobjects = product(textobjects)
@@ -37,9 +37,11 @@ M.register_opts = function(opts)
         opts = {}
     end
     if opts.paste_key ~= nil then
-        print("(anywise-reg) Deprecation warning: Use paste_keys instead of paste_key, "
-            .. "see https://github.com/AckslD/nvim-anywise-reg.lua#configuration")
-        M.config.paste_keys[opts.paste_key] = 'p'
+        print(
+            "(anywise-reg) Deprecation warning: Use paste_keys instead of paste_key, "
+                .. "see https://github.com/AckslD/nvim-anywise-reg.lua#configuration"
+        )
+        M.config.paste_keys[opts.paste_key] = "p"
     end
     for key, value in pairs(opts) do
         M.config[key] = value
