@@ -42,7 +42,9 @@ local function setup_yank_keymaps(prefix)
     for _, operator in ipairs(config.operators) do
         for _, textobject in ipairs(config.textobjects) do
             local lhs = prefix..operator..textobject
-            local rhs = '<Cmd>lua require("anywise_reg.keybinds").perform_action('..format_str_args({prefix, operator, textobject})..')<CR>'
+            local rhs = '<Cmd>lua require("anywise_reg.keybinds").perform_action('
+                .. format_str_args({prefix, operator, textobject})
+                .. ')<CR>'
             set_keymap(lhs, rhs)
         end
     end
@@ -52,7 +54,7 @@ local function setup_paste_keymaps(prefix, key, operator)
     local lhs = prefix .. key
     local rhs = '<Cmd>lua require("anywise_reg.handlers").handle_paste('
         .. format_str_args({ prefix, operator })
-        .. ")<CR>"
+        .. ')<CR>'
     set_keymap(lhs, rhs)
 end
 

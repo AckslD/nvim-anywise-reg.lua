@@ -36,6 +36,11 @@ M.register_opts = function(opts)
     if opts == nil then
         opts = {}
     end
+    if opts.paste_key ~= nil then
+        print("(anywise-reg) Deprecation warning: Use paste_keys instead of paste_key, "
+            .. "see https://github.com/AckslD/nvim-anywise-reg.lua#configuration")
+        M.config.paste_keys[opts.paste_key] = 'p'
+    end
     for key, value in pairs(opts) do
         M.config[key] = value
     end
