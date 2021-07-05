@@ -42,34 +42,34 @@ local function setup_yank_keymaps(prefix)
     for _, operator in ipairs(config.operators) do
         for _, textobject in ipairs(config.textobjects) do
             local lhs = prefix..operator..textobject
-            local rhs = '<Cmd>lua require("anywise_reg.keybinds").perform_action('..format_str_args({prefix, operator, textobject})..')<CR>'
+            local rhs = '<Cmd>lua require("anywise_reg.keybinds").perform_action('
+                .. format_str_args({prefix, operator, textobject})
+                .. ')<CR>'
             set_keymap(lhs, rhs)
         end
     end
 end
 
-local function setup_paste_keymaps(prefix)
-    local lhs = prefix..config.paste_key
-    local rhs = '<Cmd>lua require("anywise_reg.handlers").handle_paste(\''..prefix..'\')<CR>'
+local function setup_paste_keymaps(prefix, key, operator)
+    local lhs = prefix .. key
+    local rhs = '<Cmd>lua require("anywise_reg.handlers").handle_paste('
+        .. format_str_args({ prefix, operator })
+        .. ')<CR>'
     set_keymap(lhs, rhs)
 end
 
-local function setup_keymaps_for_prefix(prefix)
-    setup_yank_keymaps(prefix)
-    setup_paste_keymaps(prefix)
-end
-
 M.setup_keymaps = function()
-    if config.paste_key ~= nil then
-        local prefixes = {'', '""'}
-        for i=1,9 do
-            table.insert(prefixes, '"'..string.format("%d", i))
-        end
-        for c=97,122 do
-            table.insert(prefixes, '"'..string.char(c))
-        end
-        for _, prefix in ipairs(prefixes) do
-            setup_keymaps_for_prefix(prefix)
+    local prefixes = { "", '""' }
+    for i = 1, 9 do
+        table.insert(prefixes, '"' .. string.format("%d", i))
+    end
+    for c = 97, 122 do
+        table.insert(prefixes, '"' .. string.char(c))
+    end
+    for _, prefix in ipairs(prefixes) do
+        setup_yank_keymaps(prefix)
+        for key, operator in pairs(config.paste_keys) do
+            setup_paste_keymaps(prefix, key, operator)
         end
     end
 end
