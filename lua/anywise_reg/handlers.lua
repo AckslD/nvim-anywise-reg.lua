@@ -29,15 +29,15 @@ M.handle_paste_behind = function(prefix)
     cmd.normal(prefix .. 'P')
 end
 
-M.handle_paste = function(prefix)
+M.handle_paste = function(prefix, operator)
     local reg = get_register(prefix)
     local d = data.reg_data[reg]
     if d ~= nil then
         -- go to end of current text object
-        cmd.normal('v'..d.textobject, {noremap = false})
+        cmd.normal('v' .. d.textobject, {noremap = false})
         cmd.normal('<Esc>')
     end
-    cmd.normal(prefix..'p')
+    cmd.normal(prefix .. operator)
 end
 
 M.handle_yank_post = function()

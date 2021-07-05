@@ -48,36 +48,26 @@ local function setup_yank_keymaps(prefix)
     end
 end
 
-local function setup_paste_keymaps(prefix)
-    local lhs = prefix..config.paste_key
-    local rhs = '<Cmd>lua require("anywise_reg.handlers").handle_paste(\''..prefix..'\')<CR>'
-    set_keymap(lhs, rhs)
-end
-
-local function setup_paste_behind_keymaps(prefix)
-    local lhs = prefix .. config.paste_behind_key
-    local rhs =
-        '<Cmd>lua require("anywise_reg.handlers").handle_paste_behind(\'' ..
-            prefix .. '\')<CR>'
+local function setup_paste_keymaps(prefix, key, operator)
+    local lhs = prefix .. key
+    local rhs = '<Cmd>lua require("anywise_reg.handlers").handle_paste(\'' ..
+                    prefix .. '\',\'' .. operator .. '\')<CR>'
     set_keymap(lhs, rhs)
 end
 
 M.setup_keymaps = function()
     local prefixes = {'', '""'}
-    if config.paste_key ~= nil or config.paste_behind_key ~= nil then
+    if #config.paste_keys >= 1 then
+        -- if config.paste_key ~= nil or config.paste_behind_key ~= nil then
         for i = 1, 9 do
             table.insert(prefixes, '"' .. string.format("%d", i))
         end
         for c = 97, 122 do table.insert(prefixes, '"' .. string.char(c)) end
-
-        for _, prefix in ipairs(prefixes) do setup_yank_keymaps(prefix) end
-    end
-    if config.paste_key ~= nil then
-        for _, prefix in ipairs(prefixes) do setup_paste_keymaps(prefix) end
-    end
-    if config.paste_behind_key ~= nil then
         for _, prefix in ipairs(prefixes) do
-            setup_paste_behind_keymaps(prefix)
+            setup_yank_keymaps(prefix)
+            for key, operator in pairs(config.paste_keys) do
+                setup_paste_keymaps(prefix, key, operator)
+            end
         end
     end
 end

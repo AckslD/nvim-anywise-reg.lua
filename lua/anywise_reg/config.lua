@@ -3,9 +3,8 @@ local M = {}
 M.config = {
     operators = {},
     textobjects = {},
-    paste_key = nil,
-    paste_behind_key = nil,
-    register_print_cmd = false,
+    paste_keys = {},
+    register_print_cmd = false
 }
 
 local function product(textobjects)

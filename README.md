@@ -49,21 +49,49 @@ The default config is:
 require("anywise_reg").setup({
     operators = {},
     textobjects = {},
-    paste_key = nil,
+    paste_keys = {},
     register_print_cmd = false,
 })
 ```
 * `operators`: The operators to keep track of, e.g. `{y, d}` (see below for details).
 * `textobjects`: The textobjects to keep track of, e.g. `{aw, af}` (see below for details).
-* `paste_key`: The key used for pasting, e.g `p`.
+* `paste_keys`: The keys to use for pasting (see below for details)
 * `register_print_cmd`: Whether the command `:RegData` should be setup which can be used to print information of what's being kept track of in the registers, similar to `:reg`. Not that this currently just prints what's stored in the table and is not yet formatted nicely.
 
+`paste_keys` is a table mapping keys to operators. Mostly commonly you would use 
+```
+require("anywise_reg").setup({
+    ...
+    paste_keys = {
+        ['p' ]= 'p',
+        ['P' ]= 'P'
+    },
+    ...
+})
+```
+This maps the `p` key to the `p` operator and similarly for `P`.
+You could also do something like:
+```
+require("anywise_reg").setup({
+    ...
+    paste_keys = {
+        ['<M-p>' ]= 'p',
+        ['<M-P>' ]= 'P'
+    },
+    ...
+})
+```
+This makes the key `<M-p>` map to the `p` operator, this leaves the `p` operator to paste normally, while `<M-p>` will use the anywise-reg functionality.
+
+`operators` and `textobjects` define which operations (like `y,d,c`) should have the anywise-reg functionality.
 For example to be able to only delete (`d`) "outer words" (`aw`), call the setup as follows:
 ```lua
 require("anywise_reg").setup({
     operators = {'d'},
     textobjects = {'aw'},
-    paste_key = 'p',
+    paste_keys = {
+        ['p' ]= 'p',
+    },
 })
 ```
 This will setup keybindings for `daw`, `p` `""p` and `"[0-9a-z]p` in normal mode.
@@ -78,7 +106,9 @@ require("anywise_reg").setup({
         {'i', 'a'},
         {'w', 'W', 'f', 'c'},
     },
-    paste_key = 'p',
+    paste_keys = {
+        ['p' ]= 'p',
+    },
     register_print_cmd = true,
 })
 ```
