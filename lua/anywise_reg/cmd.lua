@@ -16,6 +16,10 @@ M.normal = function(str, opts)
     vim.cmd(replace_termcodes("normal"..flag.." "..str))
 end
 
+M.feedkeys = function(str, mode)
+    vim.fn.feedkeys(replace_termcodes(str), mode)
+end
+
 M.setup_commands = function()
     if config.register_print_cmd then
         vim.cmd('command! RegData lua require("anywise_reg.data").print_reg_data()')
