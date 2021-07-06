@@ -9,7 +9,7 @@ M.config = {
 
 local function product(textobjects)
     if textobjects[1] == nil then
-        return { "" }
+        return { '' }
     end
     local textobject = table.remove(textobjects, 1)
     local expanded_textobjects = product(textobjects)
@@ -25,7 +25,7 @@ end
 local function expand_textobjects()
     local textobjects = M.config.textobjects
     for i, textobject in ipairs(textobjects) do
-        if type(textobject) == "string" then
+        if type(textobject) == 'string' then
             textobjects[i] = { textobject }
         end
     end
@@ -38,10 +38,10 @@ M.register_opts = function(opts)
     end
     if opts.paste_key ~= nil then
         print(
-            "(anywise-reg) Deprecation warning: Use paste_keys instead of paste_key, "
-                .. "see https://github.com/AckslD/nvim-anywise-reg.lua#configuration"
+            '(anywise-reg) Deprecation warning: Use paste_keys instead of paste_key, '
+                .. 'see https://github.com/AckslD/nvim-anywise-reg.lua#configuration'
         )
-        M.config.paste_keys[opts.paste_key] = "p"
+        M.config.paste_keys[opts.paste_key] = 'p'
     end
     for key, value in pairs(opts) do
         M.config[key] = value

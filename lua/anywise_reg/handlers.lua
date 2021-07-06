@@ -1,13 +1,13 @@
 local M = {}
-local cmd = require "anywise_reg.cmd"
-local data = require "anywise_reg.data"
+local cmd = require('anywise_reg.cmd')
+local data = require('anywise_reg.data')
 
 M.before_action = function()
     data.will_handle_action = true
 end
 
 local function get_register(prefix)
-    if prefix == "" then
+    if prefix == '' then
         return '"'
     end
     return string.sub(prefix, 2, 3)
@@ -23,11 +23,11 @@ M.handle_paste = function(prefix, operator)
     local d = data.reg_data[reg]
     if d ~= nil then
         -- go to edge of current text object
-        cmd.normal("v" .. d.textobject, { noremap = false })
-        if operator == "P" then -- if 'P' we paste behind
-            cmd.normal "o"
+        cmd.normal('v' .. d.textobject, { noremap = false })
+        if operator == 'P' then -- if 'P' we paste behind
+            cmd.normal('o')
         end
-        cmd.normal "<Esc>"
+        cmd.normal('<Esc>')
     end
     cmd.normal(prefix .. operator)
 end
@@ -35,7 +35,7 @@ end
 M.handle_yank_post = function()
     local reg_name = vim.v.event.regname
     local operator = vim.v.event.operator
-    if reg_name == "" then
+    if reg_name == '' then
         reg_name = '"'
     end
     if not data.will_handle_action then
