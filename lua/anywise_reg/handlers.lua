@@ -1,6 +1,6 @@
 local M = {}
-local cmd = require("anywise_reg.cmd")
-local data = require("anywise_reg.data")
+local cmd = require('anywise_reg.cmd')
+local data = require('anywise_reg.data')
 
 M.before_action = function()
     data.will_handle_action = true
@@ -23,11 +23,11 @@ M.handle_paste = function(prefix, operator)
     local d = data.reg_data[reg]
     if d ~= nil then
         -- go to edge of current text object
-        cmd.normal("v" .. d.textobject, { noremap = false })
-        if operator == "P" then -- if 'P' we paste behind
-            cmd.normal("o")
+        cmd.normal('v' .. d.textobject, { noremap = false })
+        if operator == 'P' then -- if 'P' we paste behind
+            cmd.normal('o')
         end
-        cmd.normal("<Esc>")
+        cmd.normal('<Esc>')
     end
     cmd.normal(prefix .. operator)
 end

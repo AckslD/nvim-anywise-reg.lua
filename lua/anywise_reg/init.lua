@@ -1,5 +1,5 @@
 local M = {}
 
-M.setup = require("anywise_reg.setup").setup
+M.setup = require('anywise_reg.setup').setup
 
 return M

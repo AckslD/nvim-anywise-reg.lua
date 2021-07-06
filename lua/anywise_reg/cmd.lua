@@ -1,5 +1,5 @@
 local M = {}
-local config = require("anywise_reg.config").config
+local config = require('anywise_reg.config').config
 
 local replace_termcodes = function(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
@@ -7,13 +7,13 @@ end
 
 M.normal = function(str, opts)
     if opts == nil then
-        opts = {noremap = true}
+        opts = { noremap = true }
     end
     local flag = ''
     if opts.noremap == true then
         flag = '!'
     end
-    vim.cmd(replace_termcodes("normal"..flag.." "..str))
+    vim.cmd(replace_termcodes('normal' .. flag .. ' ' .. str))
 end
 
 M.feedkeys = function(str, mode)

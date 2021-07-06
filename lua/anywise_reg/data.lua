@@ -4,8 +4,8 @@ local M = {
 }
 
 local function shift_num_regs()
-    for i=8,1,-1 do
-        M.reg_data[string.format("%d", i + 1)] = M.reg_data[string.format("%d", i)]
+    for i = 8, 1, -1 do
+        M.reg_data[string.format('%d', i + 1)] = M.reg_data[string.format('%d', i)]
     end
 end
 
@@ -37,7 +37,7 @@ local function update_reg_data(reg_name, content)
 end
 
 M.update_reg_data = function(reg_name, operator, textobject)
-    update_reg_data(reg_name, {operator = operator, textobject = textobject})
+    update_reg_data(reg_name, { operator = operator, textobject = textobject })
 end
 
 M.print_reg_data = function()
