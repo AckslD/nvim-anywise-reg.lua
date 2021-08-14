@@ -2,6 +2,8 @@
 
 *NOTE: anywise-reg is still in an early version. So if you find any issues or have any ideas, feel free to open an issue.*
 
+*NOTE: Currently a lot of keybindings are setup in each new buffer which can make startuptime slow. I'm still looking for alternative solutions to doing this. Is you have any ideas feel free to let me know :)*
+
 ## Short intro
 Did you ever felt like doing `daf` and then `p` to paste a function somewhere else without having to care if the cursor is in the middle of a function or not, in the same way as doing `dd` followed by `p` to move a line somewhere? Then `anywise-reg` is for you.
 
